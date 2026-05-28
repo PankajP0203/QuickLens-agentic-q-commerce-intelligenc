@@ -1,0 +1,32 @@
+# Secrets — never commit
+.env
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+*.egg-info/
+dist/
+build/
+
+# Runtime state — auto-generated
+state.json
+state.json.lock
+
+# Vector stores / DBs
+*.db
+.chroma/
+
+# Virtual envs
+.venv/
+venv/
+
+# Streamlit
+.streamlit/
+
+# IDE
+.idea/
+.vscode/
+*.swp
