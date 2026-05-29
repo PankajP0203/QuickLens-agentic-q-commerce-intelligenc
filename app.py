@@ -4,7 +4,6 @@ import time
 
 import pandas as pd
 import streamlit as st
-from streamlit_autorefresh import st_autorefresh
 
 sys.path.insert(0, os.path.dirname(__file__))
 os.environ["PATH"] = f"/home/panka/miniforge3/bin:{os.environ['PATH']}"
@@ -116,9 +115,12 @@ with consumer_tab:
         )
 
         rows = []
-        for r in ranked:
+        for i, r in enumerate(ranked):
+            platform_label = r.platform.replace("_", " ").title()
+            if i == 0:
+                platform_label = f"🏆 {platform_label}"
             rows.append({
-                "Platform":  r.platform.replace("_", " ").title(),
+                "Platform":  platform_label,
                 "Price":     f"₹{r.price:.0f}" if r.price is not None else "N/A",
                 "Delivery":  f"{r.delivery_min} min" if r.delivery_min else "—",
                 "Saves":     f"₹{r.savings_vs_max:.0f}" if r.savings_vs_max else "—",
@@ -128,16 +130,7 @@ with consumer_tab:
 
         df = pd.DataFrame(rows)
 
-        def _highlight_best(row):
-            if row.name == 0:
-                return ["background-color: #d4edda; font-weight: bold"] * len(row)
-            return [""] * len(row)
-
-        st.dataframe(
-            df.style.apply(_highlight_best, axis=1),
-            use_container_width=True,
-            hide_index=True,
-        )
+        st.dataframe(df, use_container_width=True, hide_index=True)
 
         source_label = "demo cache" if from_cache else "3 platforms live"
         st.caption(f"Results fetched in {elapsed}s from {source_label}.")
@@ -150,9 +143,6 @@ with consumer_tab:
 # BRAND TAB
 # ─────────────────────────────────────────────────────────────────────────────
 with brand_tab:
-
-    # Non-blocking auto-refresh every 30 seconds (JavaScript timer, no sleep)
-    st_autorefresh(interval=30_000, key="brand_autorefresh")
 
     col_wl, col_alerts = st.columns([1, 2])
 
@@ -191,6 +181,8 @@ with brand_tab:
                 st.info("No significant changes detected.")
             st.rerun()
 
+        if st.button("🔄 Refresh Alerts", use_container_width=True):
+            st.rerun()
         st.caption(f"Brand scheduler: {'running ✓' if st.session_state.get('scheduler_started') else 'not started'}")
 
     # ── Alert feed ────────────────────────────────────────────────────────────
@@ -246,4 +238,4 @@ with brand_tab:
         else:
             st.info("No alerts yet. Click **Run Brand Sweep Now** to trigger the first sweep.")
 
-        st.caption("🔄 Auto-refreshes every 30 s")
+        st.caption("Use 🔄 Refresh Alerts to reload the feed.")

@@ -144,6 +144,15 @@ The Zepto OOS on Tata Salt is intentionally seeded to demonstrate the brand aler
 | Phase 4 — UI | `app.py` | ✅ Complete |
 | Phase 5 — Gemini Retry | `shared/gemini_client.py` + update callers in planner, ranker, alerter | ✅ Complete |
 | Phase 6 — Demo Polish | `scraper/mcp_client.py` DEMO_CACHE · `shared/models.py` `cached` field · `app.py` spinner + elapsed time | ✅ Complete |
+| Phase 7 — Bug Fixes | `app.py`, `scraper/mcp_client.py` | ✅ Complete |
+
+### Phase 7 details
+
+- **`st_autorefresh` removed** — the 30-second JS timer was firing mid-search (during the ~5–20 s generator window), causing the Streamlit script run to be interrupted before session state was written. Results silently disappeared. Replaced with a manual **🔄 Refresh Alerts** button in the Brand Dashboard; the APScheduler brand sweep still runs every 5 min in the background.
+- **`_has_price(None)` crash fixed** — `_has_price` in `mcp_client.py` called `re.search()` on `r.raw_markdown`, which is `None` for platforms that returned an empty SERP. This raised `TypeError` inside `_all_no_price`, preventing the demo cache from ever firing. Added an early `if not text: return False` guard.
+- **Demo cache confirmed working** — `_cache_lookup` keyword matching (`{"amul","milk"}`, `{"tata","salt"}`) is correct; the only blocker was the `_has_price` crash above.
+- **Best deal highlighting** — replaced Pandas `.style.apply()` (dark background + white text legibility issues) with a `🏆` emoji badge prepended to the Platform cell of row 0. Plain `st.dataframe`, no CSS.
+- **App confirmed working** — consumer loop tested 3× in a row post-fix; all three searches returned results.
 
 ---
 
@@ -151,7 +160,7 @@ The Zepto OOS on Tata Salt is intentionally seeded to demonstrate the brand aler
 
 ```
 quicklens/
-├── app.py                      # Streamlit UI — two tabs: Consumer Search + Brand Dashboard; spinner + elapsed time on consumer tab
+├── app.py                      # Streamlit UI — two tabs: Consumer Search + Brand Dashboard; spinner + elapsed time; manual Refresh Alerts button (no st_autorefresh)
 ├── state.json                  # Runtime state — auto-created, not committed
 ├── .env                        # Secrets — not committed
 ├── .env.example

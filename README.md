@@ -35,7 +35,7 @@ Two independent agentic loops share a single live data layer:
 │  Gemini: rank by price · extract delivery · note        │
 │       │                                                 │
 │       ▼                                                 │
-│  Streamlit: ranked table, best deal highlighted         │
+│  Streamlit: ranked table, 🏆 best deal badge            │
 └─────────────────────────────────────────────────────────┘
 
 ┌─────────────────────────────────────────────────────────┐
@@ -53,7 +53,7 @@ Two independent agentic loops share a single live data layer:
 │  Gemini: filter noise → generate alert + recommendation │
 │       │                                                 │
 │       ▼                                                 │
-│  Streamlit: alert feed with OOS / PRICE DROP badges     │
+│  Streamlit: alert feed · manual Refresh Alerts button   │
 └─────────────────────────────────────────────────────────┘
 ```
 
@@ -111,7 +111,7 @@ Open `http://localhost:8501`.
 > streamlit run app.py
 > ```
 
-The brand scheduler starts automatically in the background on first load. The Consumer Search tab is ready immediately.
+The brand scheduler starts automatically in the background on first load. The Consumer Search tab is ready immediately. Click **🔄 Refresh Alerts** in the Brand Dashboard to pull in the latest alerts.
 
 ---
 

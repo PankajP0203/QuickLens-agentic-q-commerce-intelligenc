@@ -138,8 +138,10 @@ def _extract_query_from_url(url: str) -> str:
     return ""
 
 
-def _has_price(text: str) -> bool:
+def _has_price(text: str | None) -> bool:
     """Return True if the text contains a price in any common Indian format."""
+    if not text:
+        return False
     return bool(re.search(r"(₹\s*[\d,]+|Rs\.?\s*[\d,]+|MRP\s*₹\s*[\d,]+)", text))
 
 
